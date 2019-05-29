@@ -1,3 +1,5 @@
+# coding: latin-1
+
 import socket
 #from scapy.all import *
 import scapy.all
@@ -59,9 +61,24 @@ while True:
             print "\n\n" + bytes_random_client
 
             prf_instance = scapy.layers.tls.crypto.prf.PRF()
-            key_session =  prf_instance.compute_master_secret(master_secret_decrypt,bytes_random_client,bytes_random_server)
-            print "bla\n",key_session,"bla"
-            print sys.getsizeof(key_session)
+            master_secret =  prf_instance.compute_master_secret(master_secret_decrypt,bytes_random_client,bytes_random_server)
+            key_session = prf_instance.derive_key_block(master_secret,bytes_random_server,bytes_random_client,64)
+            decoded_str = key_session.decode("windows-1252")
+            encoded_str = decoded_str.encode("utf8")             
+            #key_write_server = encoded_str [0:31]            
+            #print "bla\n",encoded_str,"bla"
+            #print sys.getsizeof(key_write_server)            
+            #key_write_server = []
+            count = 0
+            i = 0
+            while count < 32 :
+                count += sys.getsizeof(encoded_str[i])
+                print count
+                i = i + 1
+            palavra = key_session[0:i]                    
+
+            print "bla\n",palavra,"\nbla"
+            print sys.getsizeof(palavra) 
 
         
 

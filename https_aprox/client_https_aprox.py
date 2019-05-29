@@ -1,3 +1,5 @@
+# coding: latin-1
+
 import socket
 import os
 from Crypto.PublicKey import RSA
