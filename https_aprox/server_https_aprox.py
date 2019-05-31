@@ -5,10 +5,10 @@ import socket
 import scapy.all
 import os
 from Crypto.PublicKey import RSA 
+from Crypto.Cipher import AES
 import shutil
 import sys
-
-
+import hashlib
 
 def generate_RSA(bits=4096):   
     
@@ -54,32 +54,32 @@ while True:
         else :
             key = RSA.importKey(private_key)
             master_secret_bytes = (msg,)
-            master_secret_decrypt = key.decrypt(master_secret_bytes) 
-            #print master_secret_bytes
+            master_secret_decrypt = key.decrypt(master_secret_bytes)            
             print "\n\n" + master_secret_decrypt
             print "\n\n" + bytes_random_server
             print "\n\n" + bytes_random_client
 
             prf_instance = scapy.layers.tls.crypto.prf.PRF()
             master_secret =  prf_instance.compute_master_secret(master_secret_decrypt,bytes_random_client,bytes_random_server)
-            key_session = prf_instance.derive_key_block(master_secret,bytes_random_server,bytes_random_client,64)
-            decoded_str = key_session.decode("windows-1252")
-            encoded_str = decoded_str.encode("utf8")             
-            #key_write_server = encoded_str [0:31]            
-            #print "bla\n",encoded_str,"bla"
-            #print sys.getsizeof(key_write_server)            
-            #key_write_server = []
-            count = 0
-            i = 0
-            while count < 32 :
-                count += sys.getsizeof(encoded_str[i])
-                print count
-                i = i + 1
-            palavra = key_session[0:i]                    
+            key_session = prf_instance.derive_key_block(master_secret,bytes_random_server,bytes_random_client,64)             
+            b = bytearray()
+            b.extend(key_session)
+            a = key_session[0:32]
+            x = key_session [32:64]            
+            print "\nbla\n",key_session,"\nbla"
+            obj = AES.new(a, AES.MODE_CBC, 'This is an IV456')
+            message = "The answer is no"
+            ciphertext = obj.encrypt(message)
+            print ciphertext
+            obj2 = AES.new(a, AES.MODE_CBC, 'This is an IV456')
+            print obj2.decrypt(ciphertext)
+            iv_block = prf_instance.prf("",b"IV block",bytes_random_client + bytes_random_server, 16)
+            print iv_block
+            
 
-            print "bla\n",palavra,"\nbla"
-            print sys.getsizeof(palavra) 
-
+             
+            
+            
         
 
 
