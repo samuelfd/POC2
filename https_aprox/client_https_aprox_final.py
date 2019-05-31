@@ -49,13 +49,19 @@ server_write_key = key_session[0:32]
 MAC_write_key = key_session [32:64]
 obj = AES.new(server_write_key, AES.MODE_CBC, iv_block)
 message = "finished"
+length = 16 - (len(message) % 16)
+message += bytes([length])*length
+print message
 ciphertext = obj.encrypt(message)
 print "ciphertext " + ciphertext
+print len (ciphertext)
 pre_MAC = ciphertext + MAC_write_key
 print "pre_MAC  " + pre_MAC
-MAC = hashlib.sha256(pre_MAC)
-hex_dig = MAC.hexdigest()
-print "MAC  " + (hex_dig)
+pre_MAC = hashlib.sha256(pre_MAC)
+MAC = pre_MAC.hexdigest()
+mensagem_MAC_cipher = MAC + ciphertext
+print "mensagem_MAC_cipher  " + mensagem_MAC_cipher
 obj2 = AES.new(server_write_key, AES.MODE_CBC, iv_block)
 print "Plain Text  " + obj2.decrypt(ciphertext)
+tcp.send("final" + mensagem_MAC_cipher)
 tcp.close()

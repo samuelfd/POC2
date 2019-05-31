@@ -72,6 +72,21 @@ while True:
             print "ciphertext " + ciphertext
             obj2 = AES.new(server_write_key, AES.MODE_CBC, iv_block)
             print obj2.decrypt(ciphertext)
+        if aux[0] == "final" :
+            mensagem_MAC_cipher = aux[1]            
+            text_cipher = mensagem_MAC_cipher[len(mensagem_MAC_cipher)-32:len(mensagem_MAC_cipher)]
+            pre_MAC = text_cipher + MAC_write_key            
+            pre_MAC = hashlib.sha256(pre_MAC)
+            MAC = pre_MAC.hexdigest()
+            if MAC == MAC_client :
+                obj2 = AES.new(server_write_key, AES.MODE_CBC, iv_block)
+                plain_text = obj2.decrypt(ciphertext)
+                plain_text = plain_text[:-plain_text[-1]]
+                if plain_text == "finished" :
+                    con.send()
+
+
+
             
             
 
