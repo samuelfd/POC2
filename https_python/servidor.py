@@ -1,7 +1,7 @@
 import socket, ssl
 
 bindsocket = socket.socket()
-bindsocket.bind(('', 10023))
+bindsocket.bind(('', 5050))
 bindsocket.listen(5)
 
 def do_something(connstream, data):

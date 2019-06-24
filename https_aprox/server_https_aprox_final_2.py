@@ -8,6 +8,7 @@ from Crypto.Cipher import AES
 import shutil
 import sys
 import hashlib
+import cPickle as pickle
 
 def generate_RSA(bits=4096):   
     
@@ -18,14 +19,15 @@ def generate_RSA(bits=4096):
 
 
 HOST = ''              # Endereco IP do Servidor
-PORT = 5001            # Porta que o Servidor esta
-cifras = 'TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA'
+PORT = 5026          # Porta que o Servidor esta
+cifras = 'TLS_AES_256_CBC_SHA256'
 bytes_random_server = os.urandom(32)
+print "bytes_random_server  " + bytes_random_server
 version_tls = "1.2"
 tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 orig = (HOST, PORT)
 tcp.bind(orig)
-tcp.listen(1)
+tcp.listen(5)
 
 while True:
     con, cliente = tcp.accept()
@@ -33,14 +35,13 @@ while True:
     flag = True
     i = 0
     while True:
-        
         msg = con.recv(4096)
-        print "-------------RONALDO--------------------------------"
-        #print msg 
+        
+        print "-------------RONALDO--------------------------------"         
         aux = msg.split(',')
         if(len(aux)>1 and flag == True):
             bytes_random_client = aux[1]
-            
+            print  "bytes_random_client  " + bytes_random_client    
         if not msg: break        
         if flag :
             shutil.copyfile('certificado2.txt','certificado3.txt')
@@ -53,53 +54,53 @@ while True:
             con.sendall(bytes_random_server + "," + cifras +","+ certificado)              
             flag = False     
         elif aux[0] == "final" :
+            obj = AES.new(client_write_key, AES.MODE_CBC, iv_block)
             mensagem_MAC_cipher = aux[1]
             print "\n mensagem_MAC_cipher  " + mensagem_MAC_cipher + "\n"           
             text_cipher = mensagem_MAC_cipher[len(mensagem_MAC_cipher)-32:len(mensagem_MAC_cipher)]
-            print "text_cipher  " + text_cipher 
+            print "\nciphertext  " + text_cipher 
             MAC_client = mensagem_MAC_cipher[0:64]
-            print "MAC_client  " + MAC_client
+            print "\nMAC_client  " + MAC_client            
             pre_MAC = text_cipher + MAC_write_key_client
             pre_MAC = hashlib.sha256(pre_MAC)
             MAC = pre_MAC.hexdigest()
+            print "\nMAC_client_server  " + MAC
             if MAC == MAC_client :
-                message = "finished"
                 obj2 = AES.new(client_write_key, AES.MODE_CBC, iv_block)
-                plain_text = obj2.decrypt(text_cipher)
-                print plain_text
-                print type(plain_text)
-                plain_text = plain_text[:8]
-                print plain_text
-                if plain_text == message :
-                    obj = AES.new(server_write_key, AES.MODE_CBC, iv_block)
-                    pre_MAC = text_cipher + MAC_write_key_server
-                    pre_MAC = hashlib.sha256(pre_MAC)
-                    MAC = pre_MAC.hexdigest()                    
+                pre_plain_text = obj2.decrypt(text_cipher)
+                plain_text = pre_plain_text[:8]
+                print "\nplain_text  " + plain_text
+                if plain_text == "finished" :
+                    message = "finished"
                     length = 16 - (len(message) % 16)
                     message += bytes([length])*length
-                    print "message  " + message
-                    ciphertext = obj.encrypt(message)                    
-                    print "ciphertext  "  + ciphertext                
-                    mensagem_MAC_cipher = MAC + ciphertext
+                    obj3 = AES.new(server_write_key, AES.MODE_CBC, iv_block)
+                    text_cipher_server = obj3.encrypt(message)
+                    pre_MAC = text_cipher_server + MAC_write_key_server
+                    pre_MAC = hashlib.sha256(pre_MAC)
+                    MAC = pre_MAC.hexdigest()
+                    mensagem_MAC_cipher = MAC + text_cipher_server
+                    print "\nmensagem_MAC_cipher  " + mensagem_MAC_cipher
                     con.send(mensagem_MAC_cipher)     
         else :
             key = RSA.importKey(private_key)
-            master_secret_bytes = (msg,)
+            master_secret_bytes = pickle.loads(msg)
             master_secret_decrypt = key.decrypt(master_secret_bytes)
+            print "\nmaster_secret_decrypt  " + master_secret_decrypt
             prf_instance = scapy.layers.tls.crypto.prf.PRF()
-            master_secret =  prf_instance.compute_master_secret(master_secret_decrypt,bytes_random_client,bytes_random_server)
-            key_session = prf_instance.derive_key_block(master_secret,bytes_random_server,bytes_random_client,128)
-            print "\n" + key_session 
+            master_secret =  prf_instance.compute_master_secret(master_secret_decrypt, bytes_random_client, bytes_random_server)
+            key_session = prf_instance.derive_key_block(master_secret, bytes_random_server, bytes_random_client,128)
+            print "\nkey_session  " + key_session 
             iv_block = prf_instance.prf("",b"IV block",bytes_random_client + bytes_random_server, 16)
-            print "IVBLOCK  " + iv_block
+            print "\nIVBLOCK  " + iv_block
             client_write_key = key_session[0:32]
-            print "client_write_key  " + client_write_key +"\n"
+            print "\nclient_write_key  " + client_write_key +"\n"
             MAC_write_key_client = key_session [32:64]
-            print "MAC_write_key_client  " + MAC_write_key_client +"\n"
+            print "\nMAC_write_key_client  " + MAC_write_key_client +"\n"
             server_write_key = key_session[64:96]
-            print "server_write_key  " + server_write_key +"\n"
+            print "\nserver_write_key  " + server_write_key +"\n"
             MAC_write_key_server = key_session[96:128]
-            print "MAC_write_key_server  " + MAC_write_key_server +"\n" 
+            print "\nMAC_write_key_server  " + MAC_write_key_server +"\n" 
         i = i + 1
         print i 
 
