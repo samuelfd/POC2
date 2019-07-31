@@ -1,0 +1,24 @@
+Emitido para
+
+	Nome comum(CN) www.teste.com
+	O (organização) Teste S.A
+	Unidade organizacional (OU) <Não faz parte do certificado>
+
+Emitido por 
+	Nome comum(CN) Teste internet
+	O (organização) Teste S.A
+	Unidade organizacional (OU) <Não faz parte do certificado>
+
+Período de validade 
+
+	Emitido em terça-feira, 16 de abril de 2019 06:58:34
+	Expira em terça-feira, 9 de julho de 2019 06:52:00
+
+Assinaturas digitais
+
+	Assinatura digital SHA-256 13 DA FC 4D 23 70 1B 36 F9 D0 FC EB BD 0F 33 7C
+E3 18 DA 5C 50 29 60 98 60 45 35 2B B4 A8 89 6F
+	Assinatura digital SHA-256 DD 7C 7B 7C E8 21 59 23 53 31 7D E4 65 07 B5 9C
+5A C2 D9 8C
+
+Public Key

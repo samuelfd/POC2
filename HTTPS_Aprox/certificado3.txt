@@ -1,0 +1,38 @@
+Emitido para
+
+	Nome comum(CN) www.teste.com
+	O (organização) Teste S.A
+	Unidade organizacional (OU) <Não faz parte do certificado>
+
+Emitido por 
+	Nome comum(CN) Teste internet
+	O (organização) Teste S.A
+	Unidade organizacional (OU) <Não faz parte do certificado>
+
+Período de validade 
+
+	Emitido em terça-feira, 16 de abril de 2019 06:58:34
+	Expira em terça-feira, 9 de julho de 2019 06:52:00
+
+Assinaturas digitais
+
+	Assinatura digital SHA-256 13 DA FC 4D 23 70 1B 36 F9 D0 FC EB BD 0F 33 7C
+E3 18 DA 5C 50 29 60 98 60 45 35 2B B4 A8 89 6F
+	Assinatura digital SHA-256 DD 7C 7B 7C E8 21 59 23 53 31 7D E4 65 07 B5 9C
+5A C2 D9 8C
+
+Public Key
+-----BEGIN PUBLIC KEY-----
+MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAtw+vTR1PKM/2pP3Fs0xh
+1uQPckcUpSuj5/IRzUs4tUAuCQVGZvViJwkTgB7c3ZCT3vNK4Eka78s6f4gom2JF
+Kyb1R8+2M1CGDaei52SuBO9Hi/UnSm25pC6E4K52U+r/yUVJTJajZ1HI3yv7eMpo
+h9V4wNYR8ywVu733zHi4OuiR8XRYr4DIMgM1zhTBNfKuJPQCvnAa6qU8vMJOjQzK
+a7WCyqlXlUA+4aNNsuSQ9z/ehCIIwYZ4TIOCg6WJpbXz8BRQQkWPT6nlhWmUibuI
+zBFJm0FQ68AqJSTTkt+CTaKuC92X6DNJ5A/7/iSRr9uEq4EuekHSS1GD6nRhUWjS
+a33hdnQ6UuAKDL5D88Ym1JJIoREvqgW7lPUsld8mK9RJclO5MgE4+lHNz3RrhubL
+DFsOYmdg0SMa7VTjJKLoyR1rst8otvOFZR2OFog7R8CTlSAwbBU982hQS+S2f5Ys
+qNfXAxvmX5fw0Ss+0+IuiimmDqIyWWlZKMXsD3KmW0zo/lADM6eL6eDebGJiscw7
+CV6TT2hZwlnyP8R7p03jc/wC1Dpc/WGHnLHCXPX180Rl9Xk4uOX7z2BsC73jZdJN
+6FLVx/SnYSXwMLpcs9iPTtgA/YYJ9z1Nn7/NVJ0jdqamhe1yNllbQhXxgX/ynHp0
+Mzd7MWREP/maHdkI1IP/QPMCAwEAAQ==
+-----END PUBLIC KEY-----
